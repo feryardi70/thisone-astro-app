@@ -1,0 +1,190 @@
+---
+export const prerender = false;
+
+import Layout from '../../layouts/Layout.astro'
+
+const { id } = Astro.params;
+const baseUrl = Astro.site || "http://localhost:8787";
+
+const response = await fetch(`${baseUrl}/departure/${id}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+});
+const data = await response.json() as any;
+const departure = data;
+---
+<Layout title="Edit Departure Data">
+	<div class="flex h-screen justify-center items-center">
+        <div class="px-5 py-5 shadow-md max-w-xl min-h-96 w-full border-t-4 border-fuchsia-500">
+          <h2 class="mb-5 text-center text-3xl">Form Edit Flight Departure</h2>
+  
+          <form id="formDeparture" class="flex flex-col">
+            <div class="flex justify-between">
+                <div class="flex flex-col w-[48%]">
+                  <label for="airline" class="mb-1 text-slate-500">
+                    Airline
+                  </label>
+                  <input
+                    type="text"
+                    maxlength="2"
+                    class="px-2 py-2 mb-5 border-2 border-fuchsia-200 focus:border-blue-700 rounded-md outline-none"
+                    id="airline"
+                    name="airline"
+                    value={departure.airline}
+                    placeholder="masukkan kode airline"
+                    aria-describedby="airline"
+                  />
+        
+                  <label for="flightnumber" class="mb-1 text-slate-500">
+                    Flight Number
+                  </label>
+                  <input
+                    type="number"
+                    class="px-2 py-2 mb-5 border border-fuchsia-200 focus:border-blue-700 rounded-md outline-none"
+                    id="flightnumber"
+                    name="flightnumber"
+                    value={departure.flightnumber}
+                    placeholder="1266"
+                    aria-describedby="flightnumber"
+                  />
+        
+                  <label for="destination" class="mb-1 text-slate-500">
+                    Destination
+                  </label>
+                  <input
+                    type="text"
+                    class="px-2 py-2 mb-5 border border-fuchsia-200 focus:border-blue-700 rounded-md outline-none"
+                    id="destination"
+                    name="destination"
+                    value={departure.destination}
+                    placeholder="nama kota"
+                    aria-describedby="destination"
+                  />
+        
+                  <label for="departdate" class="mb-1 text-slate-500">
+                    Departure Date
+                  </label>
+                  <input
+                    type="date"
+                    class="px-2 py-2 mb-5 border border-fuchsia-200 focus:border-blue-700 rounded-md outline-none"
+                    id="departdate"
+                    name="departdate"
+                    value={departure.departdate}
+                    aria-describedby="departdate"
+                  />
+                </div>
+        
+                <div class="flex flex-col w-[48%]">
+                  <label for="departtime" class="mb-1 text-slate-500">
+                    Departure Time
+                  </label>
+                  <input
+                    type="time"
+                    class="px-2 py-2 mb-5 border border-fuchsia-200 focus:border-blue-700 rounded-md outline-none"
+                    id="departime"
+                    name="departime"
+                    value={departure.departime}
+                    aria-describedby="departtime"
+                  />
+        
+                  <label for="gate" class="mb-1 text-slate-500">
+                    Gate
+                  </label>
+                  <input
+                    type="text"
+                    class="px-2 py-2 mb-5 border border-fuchsia-200 focus:border-blue-700 rounded-md outline-none"
+                    id="gate"
+                    name="gate"
+                    value={departure.gate}
+                    placeholder="01"
+                    aria-describedby="gate"
+                  />
+        
+                  <label for="remark" class="mb-1 text-slate-500">
+                    Remark
+                  </label>
+                  <input
+                    type="text"
+                    class="px-2 py-2 mb-5 border border-fuchsia-200 focus:border-blue-700 rounded-md outline-none"
+                    id="remark"
+                    name="remark"
+                    value={departure.remark}
+                    aria-describedby="remark"
+                  />
+        
+                  <input type="hidden" name="id" id="id" value={departure.id} />
+                </div>
+              </div>
+            <button type="submit" class="px-2 py-2 bg-fuchsia-500 rounded text-white">
+              Edit
+            </button>
+          </form>
+        </div>
+      </div>
+</Layout>
+
+<script>
+    // Wait for the DOM content to be fully loaded
+  document.addEventListener("DOMContentLoaded", () => {
+    // Get the form element
+    const form = document.getElementById("formDeparture");
+
+    if(form){
+      form.addEventListener("submit", async (event) => {
+      event.preventDefault(); // Prevent the default form submission
+
+      // Collect data from the form
+      const id = document.querySelector<HTMLInputElement>("#id")?.value || "";
+      const airline = document.querySelector<HTMLInputElement>("#airline")?.value || "";
+      const flightnumber = document.querySelector<HTMLInputElement>("#flightnumber")?.value || "";
+      const destination = document.querySelector<HTMLInputElement>("#destination")?.value || "";
+      const departdate = document.querySelector<HTMLInputElement>("#departdate")?.value || "";
+      const departime = document.querySelector<HTMLInputElement>("#departime")?.value || "";
+      const gate = document.querySelector<HTMLInputElement>("#gate")?.value || "";
+      const remark = document.querySelector<HTMLInputElement>("#remark")?.value || "";
+
+      // Construct the payload
+      const payload = {
+        id,
+        airline,
+        flightnumber,
+        destination,
+        departdate,
+        departime,
+        gate,
+        remark,
+      };
+
+      // Send the PUT request
+      try {
+        const response = await fetch(`http://localhost:35613/departure`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        //console.log(response);
+
+        if (response.status == 200) {
+          // Handle success (e.g., show a success message or redirect)
+          alert("successfully update Departure data");
+
+          window.location.href = '/departure';
+        } else {
+          // Handle errors
+          const errorData = await response.json();
+          console.error("Error updating departure:", errorData);
+          alert("Failed to update departure. Please try again.");
+        }
+      } catch (error) {
+        console.error("Network error:", error);
+        alert("A network error occurred. Please try again.");
+      }
+    });
+    } else {
+        console.error("Form element not found");
+        alert("Form Empty");
+    }
+  });
+</script>

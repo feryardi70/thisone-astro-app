@@ -1,0 +1,55 @@
+---
+export const prerender = true;
+
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/Card.astro';
+import Sidebar from '../components/Sidebar';
+import HeaderApp from '../components/HeaderAstro';
+//import { verifyToken } from './lib/token.service';
+
+// const cookieHeader = Astro.request.headers.get("cookie");
+// const token = cookieHeader?.split("; ").find(c => c.startsWith("auth-token="))?.split("=")[1];
+
+// if (!token) {
+//   return Astro.redirect("/login");
+// }
+
+// const decoded = verifyToken(token);
+
+// if(decoded == null){
+// 	return Astro.redirect("/login");
+// }
+
+const cards = [
+  {
+    href: '/departure',
+    imgSrc: '/img/departure2.jpg',
+    title: 'Manage Departure',
+  },
+  {
+    href: '/arrival',
+    imgSrc: '/img/arrival2.jpg',
+    title: 'Manage Arrival',
+  },
+];
+---
+
+<Layout title="Welcome to Astro.">
+	<div class="flex flex-wrap flex-row">
+		<Sidebar client:idle />
+		<div class="w-5/6 bg-nias">
+		<HeaderApp client:idle />
+		<div class="cards flex flex-row ml-10 mt-5 justify-evenly">
+			{cards.map((card) => (
+				<Card {...card} />
+		  	))}
+		</div>
+		</div>
+	</div>
+</Layout>
+
+<style>
+	.bg-nias {
+		background-image: url("/img/nias2.jpeg");
+	}
+</style>

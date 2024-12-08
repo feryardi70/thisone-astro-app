@@ -1,0 +1,33 @@
+---
+export const prerender = false;
+
+import Layout from '../layouts/Layout.astro';
+import DepartureList from '../components/DepartureList'
+
+// interface Departure {
+//   id: number;
+//   airline: string;
+//   flightnumber: string;
+//   destination: string;
+//   departdate: string;
+//   departtime: string;
+//   gate: string;
+//   remark: string;
+// }
+
+// const departures: Departure[] = await prisma.departure.findMany();
+//console.log(departures);
+ 
+---
+
+<Layout title="Departure Dashboard">
+	<div>
+     <DepartureList client:visible/>
+	</div>
+</Layout>
+
+<style>
+	.bg-nias {
+		background-image: url("/img/nias2.jpeg");
+	}
+</style>

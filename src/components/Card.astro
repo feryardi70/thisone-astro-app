@@ -1,0 +1,17 @@
+---
+export interface CardProps {
+  href: string;
+  imgSrc: string;
+  title: string;
+}
+
+const props = Astro.props as CardProps;
+const { href, imgSrc, title }: CardProps = props;
+---
+
+<div class="card">
+  <a href={href} target="_blank" rel="noopener noreferrer">
+    <img class="rounded-lg img-depart" src={imgSrc} alt={title} />
+    <h3 class="text-center text-white text-3xl bg-blue-600 py-2">{title}</h3>
+  </a>
+</div>
